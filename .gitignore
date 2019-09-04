@@ -101,3 +101,10 @@ ENV/
 .mypy_cache/
 
 RUNS/
+
+# Datasets
+data/
+
+# macOS
+.DS_Store
+
