@@ -139,7 +139,7 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
 			[tf.nn.softmax(logits)],
 			{keep_prob: 1.0, image_pl: [image]})
 		# Splice out second column (road), reshape output back to image_shape
-		im_softmax = im_softmax[0][:, 1].reshape(image_shape[0], image_shape[1])
+		im_softmax = im_softmax[0][:, :, 1]
 		# If road softmax > 0.5, prediction is road
 		segmentation = (im_softmax > 0.5).reshape(image_shape[0], image_shape[1], 1)
 		# Create mask based on segmentation to apply to original image
