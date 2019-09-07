@@ -6,6 +6,7 @@ import warnings
 from distutils.version import LooseVersion
 import project_tests as tests
 import time
+import sys
 
 
 # Check TensorFlow Version
@@ -151,7 +152,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
         minibatch_count = 0
         
         for images, labels in get_batches_fn(batch_size):
-            
+            # TODO: Add image normalization
             feed_dict={input_image: images, correct_label: labels, keep_prob: 0.5, learning_rate: 0.0001}
             _, loss = sess.run([train_op, cross_entropy_loss], feed_dict)
             
@@ -166,7 +167,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
 tests.test_train_nn(train_nn)
 
 
-def run():
+def run(epochs=48, batch_size=17):
     num_classes = 2
     image_shape = (160, 576)  # KITTI dataset uses 160x576 images
     data_dir = './data'
@@ -202,10 +203,8 @@ def run():
         logits, train_op, cross_entropy_loss = optimize(layer_output, correct_label, learning_rate, num_classes)
 
         # Train NN using the train_nn function
-        epochs = 10
-        batch_size = 17
-        
-        saver = tf.train.Saver()
+        # TODO: Add model saving
+        # saver = tf.train.Saver()
         
         train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image,
                  correct_label, keep_prob, learning_rate)
@@ -217,4 +216,10 @@ def run():
         # OPTIONAL: Apply the trained model to a video
 
 if __name__ == '__main__':
-    run()
+    epochs = 48
+    batch_size = 17
+    if len(sys.argv) > 1:
+        epochs = int(sys.argv[1])
+    if len(sys.argv) > 2:
+        batch_size = int(sys.argv[2])
+    run(epochs, batch_size)
